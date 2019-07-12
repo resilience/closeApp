@@ -1,2 +1,2 @@
-# closeApp
-EST date converter
+# close App
+EST date converter function for test

@@ -2,39 +2,33 @@ import datetime
 import pytz
 import iso8601
 
+def convert_date_to_company_format(date_iso_str):
+    """
+    Convert an ISO 8601 datetime string to the company's standard format in US/Eastern time zone.
+    Args:
+    date_iso_str (str): ISO 8601 format datetime string.
+    
+    Returns:
+    str: Datetime in company's standard format '%d-%m-%Y %H:%M:%S %p' in US/Eastern time zone.
+    """
+    try:
+        # Parse the ISO 8601 string to datetime object
+        date_obj = iso8601.parse_date(date_iso_str)
 
+        # Convert to US/Eastern time zone
+        eastern = pytz.timezone('US/Eastern')
+        tz_date_obj = date_obj.astimezone(eastern)
 
+        # Format date to company's standard
+        company_format = '%d-%m-%Y %H:%M:%S %p'
+        formatted_date = tz_date_obj.strftime(company_format)
+        return formatted_date
+
+    except Exception as e:
+        print("Error in date conversion:", e)
+        return None
+
+# Test the function
 date_str_iso = '2019-07-01T00:00:00Z'
-
-
-date_str = str(iso8601.parse_date(date_str_iso)).split('+')[0]
-
-print('initial date: ',date_str)
-
-
-def convertdate ( dateVar ):
-    """ this function translates date time into US/EU timezone with company standard formating """
-    company_format = '%d-%m-%Y %H:%M:%S %p'
-
-    date_obj = datetime.datetime.strptime(dateVar, '%Y-%m-%d %H:%M:%S')
-    eastern = pytz.timezone('US/Eastern')
-    tz_datetime_obj = eastern.localize(date_obj)
-    # print(tz_datetime_obj)
-
-    str_date = str(tz_datetime_obj)
-
-    """store offset to hour and minute variable"""
-    offset = str_date[19:]
-    hours = int(offset.split(':')[0])
-    minutes = int(offset.split(':')[1])
-    print('offset: ', offset)
-
-    """ return date in correct format"""
-    result = tz_datetime_obj.replace(tzinfo=None)
-    result_with_offset = result + datetime.timedelta(hours = hours, minutes = minutes)
-
-    print(result_with_offset.strftime(company_format))
-
-
-convertdate(date_str)
-
+print('Initial date:', date_str_iso)
+print('Converted date:', convert_date_to_company_format(date_str_iso))
